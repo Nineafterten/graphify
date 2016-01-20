@@ -1,8 +1,6 @@
 var gulp =          require("gulp");
 var copy =          require("gulp-copy");
 var connect =       require("gulp-connect");
-var notify =        require("gulp-notify");
-var plumber =       require("gulp-plumber");
 
 // connect to the local server
 gulp.task("connect", function() {
@@ -15,16 +13,13 @@ gulp.task("connect", function() {
 
 // watch for html, less, and js file changes
 gulp.task("watch", function () {
-    gulp.watch("./src/*.html", ["html"]);
-    gulp.watch("./src/*.js", ["scripts"]);
+    gulp.watch("./src/example.html", ["html"]);
+    gulp.watch("./src/graphify.js", ["scripts"]);
 });
 
 // update when html files change
 gulp.task("html", function () {
     gulp.src("./src/example.html")
-    .pipe(plumber({
-        errorHandler: notify.onError("Html: <%= error.message %>")
-    }))
     .pipe(gulp.dest("test/"))
     .pipe(connect.reload());
 });
@@ -32,21 +27,12 @@ gulp.task("html", function () {
 // update and recompile when js files change
 gulp.task("scripts", function() {
     gulp.src("./src/graphify.js")
-    .pipe(plumber({
-        errorHandler: notify.onError("Scripts: <%= error.message %>")
-    }))
     .pipe(gulp.dest("test/"))
     .pipe(connect.reload());
 });
 
 gulp.task("copy", function() {
-    gulp.src([
-        "./bower_components/**/*",
-        "./node_modules/**/*"
-    ])
-    .pipe(plumber({
-        errorHandler: notify.onError("Copy: <%= error.message %>")
-    }))
+    gulp.src("./bower_components/**/*.*")
     .pipe(copy("test/"));
 });
 
