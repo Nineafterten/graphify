@@ -1,0 +1,17 @@
+{
+  "name": "graphify",
+  "main": "graphify",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "*",
+    "font-awesome": "*",
+    "jquery": "*"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "build"
+  ]
+}
