@@ -10,22 +10,31 @@
 
         <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
         <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="bower_components/Chart.js/Chart.js"></script>
 
         <script type="text/javascript" src="graphify.js"></script>
     </head>
 
     <body>
         <div class="container">
-            <h1>Graphify Example</h1>
+            <h1>Graphify - jQuery Plugin</h1>
 
-            <div id="example" class="well">
-                <h4>Hello world!</h4>
+            <div class="well">
+                <label for="example">Example Label</label>
+                <input type="number" class="form-control" id="example" placeholder="value">
             </div>
         </div>
 
 
         <script>
-            $("#example").graphify();
+            $("#example").graphify({
+                cssPosition: "absolute",
+                dataType: "probabilistic",
+                graphType: "uniform geometric",
+                values: {
+                    main: 20
+                }
+            });
         </script>
     </body>
 </html>

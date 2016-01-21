@@ -1,42 +1,28 @@
+
 (function ( $ ) {
     
-    console.log("graphify loaded.");
-
     $.fn.graphify = function(options) {
         
         var opts = $.extend( {}, $.fn.graphify.defaults, options );
+        var elem =  this.selector;
 
-        console.log("opts", opts);
+        console.log("opts", opts, elem);
 
-
-        var createDeterminsticElements = function() {
-            console.log("createDeterminsticElements");
-            // figure out element injection here first
+        var createGraph = function() {
+            $(elem).after(
+                "<div class='data-graph well' style='position:" +opts.cssPosition+ "'>" +
+                "<canvas id='dataChart' width='400' height='400'></canvas>" +
+                "</div>"
+            );
         };
-
-        var setType = function () {
-            if(options && options.type) {
-                switch(options.type) {
-                    case "deterministic":
-                        createDeterminsticElements();
-                        break;
-                    default:
-                        console.log("I was passed '" + options.type + "' as a 'option.type' but I don't know what to do with that.");
-                }
-            }
-            else {
-                createDeterminsticElements();
-            }
-            console.log("setType");
-        };
-        setType();
+        createGraph();
  
     };
 
     $.fn.graphify.defaults = {
-        display: "inline",              // CSS display type
-        iconClass: "fa-bullseye",       // Font-awesome class icon
-        type: "deterministic",          // chart type
+        cssPosition: "inline",                  // CSS display type
+        dataType: "deterministic",          // chart type
+        graphType: "geometric",             // graph type
         values: {
             average: null,
             deviation: null,

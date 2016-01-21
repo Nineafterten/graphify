@@ -6,7 +6,8 @@
   "dependencies": {
     "bootstrap": "*",
     "font-awesome": "*",
-    "jquery": "*"
+    "jquery": "*",
+    "Chart.js": "~1.0.2"
   },
   "ignore": [
     "**/.*",
