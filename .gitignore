@@ -1,7 +1,7 @@
 #Directories
 
 bower_components/
-test/
+demo/
 node_modules/
 
 #Files
