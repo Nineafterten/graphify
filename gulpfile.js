@@ -5,7 +5,7 @@ var connect =       require("gulp-connect");
 // connect to the local server
 gulp.task("connect", function() {
     connect.server({
-        root: "test",
+        root: "demo",
         livereload: true,
         port: 7100
     });
@@ -20,20 +20,20 @@ gulp.task("watch", function () {
 // update when html files change
 gulp.task("html", function () {
     gulp.src("./src/example.html")
-    .pipe(gulp.dest("test/"))
+    .pipe(gulp.dest("demo/"))
     .pipe(connect.reload());
 });
 
 // update and recompile when js files change
 gulp.task("scripts", function() {
     gulp.src("./src/graphify.js")
-    .pipe(gulp.dest("test/"))
+    .pipe(gulp.dest("demo/"))
     .pipe(connect.reload());
 });
 
 gulp.task("copy", function() {
     gulp.src("./bower_components/**/*.*")
-    .pipe(copy("test/"));
+    .pipe(copy("demo/"));
 });
 
 // for development
