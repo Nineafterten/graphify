@@ -13,20 +13,20 @@ gulp.task("connect", function() {
 
 // watch for html, less, and js file changes
 gulp.task("watch", function () {
-    gulp.watch("./src/example.html", ["html"]);
-    gulp.watch("./src/graphify.js", ["scripts"]);
+    gulp.watch("./src/*.html", ["html"]);
+    gulp.watch("./src/*.js", ["scripts"]);
 });
 
 // update when html files change
 gulp.task("html", function () {
-    gulp.src("./src/example.html")
+    gulp.src("./src/*.html")
     .pipe(gulp.dest("demo/"))
     .pipe(connect.reload());
 });
 
 // update and recompile when js files change
 gulp.task("scripts", function() {
-    gulp.src("./src/graphify.js")
+    gulp.src("./src/*.js")
     .pipe(gulp.dest("demo/"))
     .pipe(connect.reload());
 });
