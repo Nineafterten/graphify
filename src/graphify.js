@@ -31,69 +31,69 @@
                             "<span class='caret'></span>" +
                         "</button>" +
                         "<ul class='dropdown-menu'>" +
-                            "<li><a data-graph-type='graph_deterministic'>" +
+                            "<li><a data-graph-type='deterministic'>" +
                                 "<i class='fa fa-bullseye'></i> Deterministic" +
                             "</a></li>" +
-                            "<li><a data-graph-type='graph_uniform'>" +
+                            "<li><a data-graph-type='uniform'>" +
                                 "<i class='fa fa-line-chart'></i> Uniform" +
                             "</a></li>" +
-                            "<li><a data-graph-type='graph_normal'>" +
+                            "<li><a data-graph-type='normal'>" +
                                 "<i class='fa fa-line-chart'></i> Normal" +
                             "</a></li>" +
-                            "<li><a data-graph-type='graph_logNormal'>" +
+                            "<li><a data-graph-type='logNormal'>" +
                                 "<i class='fa fa-line-chart'></i> Log Normal" +
                             "</a></li>" +
-                            "<li><a data-graph-type='graph_triangular'>" +
+                            "<li><a data-graph-type='triangular'>" +
                                 "<i class='fa fa-area-chart'></i> Triangular" +
                             "</a></li>" +
-                            "<li><a data-graph-type='graph_beta'>" +
+                            "<li><a data-graph-type='beta'>" +
                                 "<i class='fa fa-line-chart'></i> Beta" +
                             "</a></li>" +
-                            "<li><a data-graph-type='graph_geometric'>" +
+                            "<li><a data-graph-type='geometric'>" +
                                 "<i class='fa fa-bullseye'></i> Geometric" +
                             "</a></li>" +
-                            "<li><a data-graph-type='graph_truncNormal'>" +
+                            "<li><a data-graph-type='truncNormal'>" +
                                 "<i class='fa fa-bar-chart'></i> Truncated Normal" +
                             "</a></li>" +
-                            "<li><a data-graph-type='graph_truncLogNormal'>" +
+                            "<li><a data-graph-type='truncLogNormal'>" +
                                 "<i class='fa fa-bar-chart'></i> Truncated Log Normal" +
                             "</a></li>" +
                         "</ul>" +
                     "</div>" +
-                    "<div class='graph-input single graph_deterministic'>" +
+                    "<div class='graphInput single deterministic'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue1' placeholder='value'>" +
                     "</div>" +
-                    "<div class='graph-input single graph_geometric hidden'>" +
+                    "<div class='graphInput single geometric hidden'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue1' placeholder='value'>" +
                     "</div>" +
-                    "<div class='graph-input double graph_uniform hidden'>" +
+                    "<div class='graphInput double uniform hidden'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue1' placeholder='minimum'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue2' placeholder='maximum'>" +
                     "</div>" +
-                    "<div class='graph-input double graph_normal hidden'>" +
+                    "<div class='graphInput double normal hidden'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue1' placeholder='minimum'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue2' placeholder='maximum'>" +
                     "</div>" +
-                    "<div class='graph-input double graph_logNormal hidden'>" +
+                    "<div class='graphInput double logNormal hidden'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue1' placeholder='minimum'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue2' placeholder='maximum'>" +
                     "</div>" +
-                    "<div class='graph-input double graph_beta hidden'>" +
+                    "<div class='graphInput double beta hidden'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue1' placeholder='minimum'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue2' placeholder='maximum'>" +
                     "</div>" +
-                    "<div class='graph-input triple graph_triangular hidden'>" +
+                    "<div class='graphInput triple triangular hidden'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue1' placeholder='minimum'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue2' placeholder='middle'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue3' placeholder='maximum'>" +
                     "</div>" +
-                    "<div class='graph-input quadruple graph_truncNormal hidden'>" +
+                    "<div class='graphInput quadruple truncNormal hidden'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue1' placeholder='mean'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue2' placeholder='dev'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue3' placeholder='min'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue4' placeholder='max'>" +
                     "</div>" +
-                    "<div class='graph-input quadruple graph_truncLogNormal hidden'>" +
+                    "<div class='graphInput quadruple truncLogNormal hidden'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue1' placeholder='mean'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue2' placeholder='dev'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue3' placeholder='min'>" +
@@ -101,6 +101,7 @@
                     "</div>" +
                 "</div>"+
                 "<div id='"+originalId+"_graph' class='"+options.graphClassName+" chart-hide'>" +
+                    "<a class='hide-chart-button'><i class='fa fa-times-circle'></i></a>" +
                     "<canvas id='"+originalId+"_canvas' width='"+options.graphWidth+"' height='"+options.graphHeight+"'></canvas>" +
                 "</div>"
             );
@@ -114,8 +115,8 @@
 
         // toggle graph selections and button style change
         me.toggleGraphType = function (type) {
-            $(".graph-input").removeClass("visible").addClass("hidden");
-            $(".graph-input." + type).removeClass("hidden").addClass("visible");
+            $(".graphInput").removeClass("visible").addClass("hidden");
+            $(".graphInput." + type).removeClass("hidden").addClass("visible");
             switch(type) {
                 case "graph_uniform":
                 case "graph_normal":
@@ -134,8 +135,6 @@
                     $(".graph-toggle-indicator").removeClass().addClass("graph-toggle-indicator fa fa-bullseye");
             }
         };
-
-        // TODO - add hide chart "x"
         
         // hide/show graph
         me.hideGraph = function() {
@@ -182,6 +181,12 @@
             e.preventDefault();
             var type = $(this).attr("data-graph-type");
             me.toggleGraphType(type);
+        });
+
+        // watch for closing the chart manually
+        $("#"+originalId+"_graph .hide-chart-button").on("click", function(e) {
+            e.preventDefault();
+            me.hideGraph();
         });
     };
 
