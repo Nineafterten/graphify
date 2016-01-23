@@ -7,6 +7,19 @@
         var options = $.extend( {}, $.fn.graphify.defaults, userOptions );
         var originalId = this.selector.substring(1);
 
+        var renderData = {
+            labels: [0, 10, 20, 30],
+            datasets: [{
+                data: options.values,
+                fillColor: options.fillColor,
+                strokeColor: options.strokeColor,
+                pointColor: options.pointColor,
+                pointStrokeColor: options.pointStrokeColor,
+                pointHighlightFill: options.pointHighlightFill,
+                pointHighlightStroke: options.pointHighlightStroke
+            }]
+        };
+
         // the template for selection
         me.createElementsTemplate = function() {
             $(this.selector).html(
@@ -87,7 +100,7 @@
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue4' placeholder='max'>" +
                     "</div>" +
                 "</div>"+
-                "<div id='"+originalId+"_graph' class='"+options.graphClassName+" well chart-hide'>" +
+                "<div id='"+originalId+"_graph' class='"+options.graphClassName+" chart-hide'>" +
                     "<canvas id='"+originalId+"_canvas' width='"+options.graphWidth+"' height='"+options.graphHeight+"'></canvas>" +
                 "</div>"
             );
@@ -95,21 +108,8 @@
         
         // load the data and render it
         me.loadDataInGraph = function() {
-            var renderData = {
-                labels: [0, 5, 10],
-                datasets: [{
-                    data: options.values,
-                    fillColor: options.fillColor,
-                    strokeColor: options.strokeColor,
-                    pointColor: options.pointColor,
-                    pointStrokeColor: options.pointStrokeColor,
-                    pointHighlightFill: options.pointHighlightFill,
-                    pointHighlightStroke: options.pointHighlightStroke
-                }]
-            };
-
             var ctx = $("#"+originalId+"_canvas").get(0).getContext("2d");
-            new Chart(ctx).Line(renderData, options.graphOptions);
+            theGraph = new Chart(ctx).Line(renderData, options.graphOptions);
         };
 
         // toggle graph selections and button style change
@@ -145,12 +145,12 @@
         
         // update graph
         me.updateDataInGraph = function(number, data) {
-            options.values[number] = Number(data);
             // update hidden input
+            options.values[number-1] = Number(data);
             $("#"+originalId+"_cargo").val(options.values);
-
-            // TODO - refresh graph with new data here
-
+            // update graph
+            theGraph.datasets[0].points[number].value = data;
+            theGraph.update();
         };
 
         // fusebox
