@@ -1,0 +1,49 @@
+
+.chart-hide {
+    margin-left: -9999px;
+}
+
+.chart-show {
+    margin-left: 0;
+}
+
+.graph-input + .single > .form-control {
+    width: 100%;
+    border-bottom-right-radius: 0.4rem;
+    border-top-right-radius: 0.4rem;
+}
+
+.graph-input + .double > .form-control {
+    width: 50%;
+    border-left: 0;
+}
+
+.graph-input + .double > .form-control:first-child {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.graph-input + .triple > .form-control {
+    width: 33%;
+    border-left: 0;
+}
+
+.graph-input + .triple > .form-control:first-child {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.graph-input + .quadruple > .form-control {
+    width: 25%;
+    border-left: 0;
+}
+
+.graph-input + .quadruple > .form-control:first-child {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.data-graph {
+    position: absolute;
+    margin-top: 1.0rem;
+}

@@ -11,36 +11,27 @@ gulp.task("connect", function() {
     });
 });
 
-// watch for html, less, and js file changes
+// watch for file changes
 gulp.task("watch", function () {
-    gulp.watch("./src/*.html", ["html"]);
-    gulp.watch("./src/*.js", ["scripts"]);
+    gulp.watch("./src/*.*", ["update"]);
 });
 
-// update when html files change
-gulp.task("html", function () {
-    gulp.src("./src/*.html")
+// update when files change
+gulp.task("update", function () {
+    gulp.src("./src/*.*")
     .pipe(gulp.dest("demo/"))
     .pipe(connect.reload());
 });
 
-// update and recompile when js files change
-gulp.task("scripts", function() {
-    gulp.src("./src/*.js")
-    .pipe(gulp.dest("demo/"))
-    .pipe(connect.reload());
-});
-
-gulp.task("copy", function() {
+gulp.task("bower", function() {
     gulp.src("./bower_components/**/*.*")
     .pipe(copy("demo/"));
 });
 
 // for development
 gulp.task("dev", [
-    "copy",
-    "html",
-    "scripts",
+    "bower",
+    "update",
     "connect",
     "watch"
 ]);

@@ -7,14 +7,14 @@
         var options = $.extend( {}, $.fn.graphify.defaults, userOptions );
         var originalId = this.selector.substring(1);
 
+        // the template for selection
         me.createElementsTemplate = function() {
             $(this.selector).html(
                 "<input id='"+originalId+"_cargo' class='hidden'>" +
-
                 "<div class='input-group'>" +
                     "<div class='input-group-btn graph-toggle-btn'>" +
                         "<button type='button' class='btn btn-warning dropdown-toggle' data-toggle='dropdown'>" +
-                            "<i class='fa fa-bullseye graph-toggle-indicator'></i>" +
+                            "<i class='fa fa-bullseye graph-toggle-indicator'></i> " +
                             "<span class='caret'></span>" +
                         "</button>" +
                         "<ul class='dropdown-menu'>" +
@@ -40,14 +40,13 @@
                                 "<i class='fa fa-bullseye'></i> Geometric" +
                             "</a></li>" +
                             "<li><a data-graph-type='graph_truncNormal'>" +
-                                "<i class='fa fa-bar-graph'></i> Truncated Normal" +
+                                "<i class='fa fa-bar-chart'></i> Truncated Normal" +
                             "</a></li>" +
                             "<li><a data-graph-type='graph_truncLogNormal'>" +
-                                "<i class='fa fa-bar-graph'></i> Truncated Log Normal" +
+                                "<i class='fa fa-bar-chart'></i> Truncated Log Normal" +
                             "</a></li>" +
                         "</ul>" +
                     "</div>" +
-
                     "<div class='graph-input single graph_deterministic'>" +
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue1' placeholder='value'>" +
                     "</div>" +
@@ -88,19 +87,18 @@
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue4' placeholder='max'>" +
                     "</div>" +
                 "</div>"+
-
-                "<div id='"+originalId+"_graph' class='"+options.graphClassName+" well'>" +
+                "<div id='"+originalId+"_graph' class='"+options.graphClassName+" well chart-hide'>" +
                     "<canvas id='"+originalId+"_canvas' width='"+options.graphWidth+"' height='"+options.graphHeight+"'></canvas>" +
                 "</div>"
             );
         };
-
+        
         // load the data and render it
         me.loadDataInGraph = function() {
             var renderData = {
-                labels: options.values.x,
+                labels: [0, 5, 10],
                 datasets: [{
-                    data: options.values.y,
+                    data: options.values,
                     fillColor: options.fillColor,
                     strokeColor: options.strokeColor,
                     pointColor: options.pointColor,
@@ -115,7 +113,7 @@
         };
 
         // toggle graph selections and button style change
-        me.toggleGraph = function (type) {
+        me.toggleGraphType = function (type) {
             $(".graph-input").removeClass("visible").addClass("hidden");
             $(".graph-input." + type).removeClass("hidden").addClass("visible");
             switch(type) {
@@ -130,22 +128,29 @@
                     break;
                 case "graph_truncNormal":
                 case "graph_truncLogNormal":
-                    $(".graph-toggle-indicator").removeClass().addClass("graph-toggle-indicator fa fa-bar-graph");
+                    $(".graph-toggle-indicator").removeClass().addClass("graph-toggle-indicator fa fa-bar-chart");
                     break;
                 default:
                     $(".graph-toggle-indicator").removeClass().addClass("graph-toggle-indicator fa fa-bullseye");
             }
         };
-
+        
+        // hide/show graph
         me.hideGraph = function() {
-            $("#"+originalId+"_graph").removeClass("visible").addClass("hidden");
+            $("#"+originalId+"_graph").removeClass("chart-show").addClass("chart-hide");
         };
         me.showGraph = function() {
-            $("#"+originalId+"_graph").addClass("visible").removeClass("hidden");
+            $("#"+originalId+"_graph").addClass("chart-show").removeClass("chart-hide");
         };
+        
+        // update graph
+        me.updateDataInGraph = function(number, data) {
+            options.values[number] = Number(data);
+            // update hidden input
+            $("#"+originalId+"_cargo").val(options.values);
 
-        me.updateDataInGraph = function(data) {
-            console.log("Update data graph", data);
+            // TODO - refresh graph with new data here
+
         };
 
         // fusebox
@@ -159,12 +164,13 @@
         $("#"+originalId+"_inputValue1, #"+originalId+"_inputValue2, #"+originalId+"_inputValue3, #"+originalId+"_inputValue4")
         .on("change", function() {
             var data = $(this).val();
-            if(data.length) {
-                me.updateDataInGraph(data);
+            var number = $(this).attr("id").slice(-1);
+            if(data > -1) {
+                me.updateDataInGraph(number, data);
                 me.showGraph();
             }
             else {
-                me.updateDataInGraph(data);
+                me.updateDataInGraph(number, data);
                 me.hideGraph();
             }
         });
@@ -173,12 +179,12 @@
         $(".dropdown-menu a[data-graph-type]").on("click", function(e) {
             e.preventDefault();
             var type = $(this).attr("data-graph-type");
-            me.toggleGraph(type);
+            me.toggleGraphType(type);
         });
     };
 
+    // graphify plugin defaults
     $.fn.graphify.defaults = {
-
         // graph JS defaults
         fillColor: "rgba(151,187,205,0.2)",
         strokeColor: "rgba(151,187,205,1)",
@@ -186,7 +192,6 @@
         pointStrokeColor: "#fff",
         pointHighlightFill: "#fff",
         pointHighlightStroke: "rgba(151,187,205,1)",
-
         // graphify defaults
         graphClassName: "data-graph",       // custom class name (for styling)
         graphHeight: 400,                   // graph height
@@ -194,10 +199,7 @@
         graphWidth: 400,                    // graph width
         dataType: "deterministic",          // graph type
         graphType: "geometric",             // graph type
-        values: {                           // data to pass
-            x: null,
-            y: null
-        }
+        values: [0, 10, 20, 30]
     };
 
 }( jQuery ));

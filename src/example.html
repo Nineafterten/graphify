@@ -7,11 +7,11 @@
 
         <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="bower_components/font-awesome/css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="graphify.css" />
 
         <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
         <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="bower_components/Chart.js/Chart.js"></script>
-
         <script type="text/javascript" src="graphify.js"></script>
     </head>
 
@@ -21,26 +21,14 @@
 
             <div class="well">
                 <label for="example">Example Label</label>
+                <!-- the element that the plugin needs -->
                 <div id="example"></div>
             </div>
         </div>
 
 
         <script>
-            $("#example").graphify({
-                dataType: "probabilistic",
-                graphType: "log-normal",
-                values: {
-                    x: [20, 40, 50],
-                    y: [1, 5, 10]
-                }
-            });
+            $("#example").graphify();
         </script>
-        <style>
-            .data-chart {
-                position: absolute;
-                margin-top: 1.0rem;
-            }
-        </style>
     </body>
 </html>
