@@ -134,6 +134,8 @@
                     $(".graph-toggle-indicator").removeClass().addClass("graph-toggle-indicator fa fa-bullseye");
             }
         };
+
+        // TODO - add hide chart "x"
         
         // hide/show graph
         me.hideGraph = function() {
@@ -149,7 +151,7 @@
             options.values[number-1] = Number(data);
             $("#"+originalId+"_cargo").val(options.values);
             // update graph
-            theGraph.datasets[0].points[number].value = data;
+            theGraph.datasets[0].points[number-1].value = data;
             theGraph.update();
         };
 
