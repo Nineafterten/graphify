@@ -47,6 +47,7 @@
 }
 
 .data-graph {
+    z-index: 10;
     position: absolute;
     margin-top: 1.0rem;
     min-height: 20px;

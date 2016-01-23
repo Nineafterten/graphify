@@ -6,6 +6,7 @@
         var me = this;
         var options = $.extend( {}, $.fn.graphify.defaults, userOptions );
         var originalId = this.selector.substring(1);
+        var thisGraph;
 
         var renderData = {
             labels: [0, 10, 20, 30],
@@ -106,33 +107,43 @@
                 "</div>"
             );
         };
-        
+        me.createElementsTemplate();
+
         // load the data and render it
         me.loadDataInGraph = function() {
             var ctx = $("#"+originalId+"_canvas").get(0).getContext("2d");
-            theGraph = new Chart(ctx).Line(renderData, options.graphOptions);
+            thisGraph = new Chart(ctx).Line(renderData, options.graphOptions);
         };
+        me.loadDataInGraph();
 
         // toggle graph selections and button style change
         me.toggleGraphType = function (type) {
-            $(".graphInput").removeClass("visible").addClass("hidden");
-            $(".graphInput." + type).removeClass("hidden").addClass("visible");
+            $("#"+originalId+" .graphInput").removeClass("visible").addClass("hidden");
+            $("#"+originalId+" .graphInput." + type).removeClass("hidden").addClass("visible");
             switch(type) {
-                case "graph_uniform":
-                case "graph_normal":
-                case "graph_logNormal":
-                case "graph_beta":
-                    $(".graph-toggle-indicator").removeClass().addClass("graph-toggle-indicator fa fa-line-chart");
+                case "uniform":
+                case "normal":
+                case "logNormal":
+                case "beta":
+                    $("#"+originalId+" .graph-toggle-indicator")
+                    .removeClass()
+                    .addClass("graph-toggle-indicator fa fa-line-chart");
                     break;
-                case "graph_triangular":
-                    $(".graph-toggle-indicator").removeClass().addClass("graph-toggle-indicator fa fa-area-chart");
+                case "triangular":
+                    $("#"+originalId+" .graph-toggle-indicator")
+                    .removeClass()
+                    .addClass("graph-toggle-indicator fa fa-area-chart");
                     break;
-                case "graph_truncNormal":
-                case "graph_truncLogNormal":
-                    $(".graph-toggle-indicator").removeClass().addClass("graph-toggle-indicator fa fa-bar-chart");
+                case "truncNormal":
+                case "truncLogNormal":
+                    $("#"+originalId+" .graph-toggle-indicator")
+                    .removeClass()
+                    .addClass("graph-toggle-indicator fa fa-bar-chart");
                     break;
                 default:
-                    $(".graph-toggle-indicator").removeClass().addClass("graph-toggle-indicator fa fa-bullseye");
+                    $("#"+originalId+" .graph-toggle-indicator")
+                    .removeClass()
+                    .addClass("graph-toggle-indicator fa fa-bullseye");
             }
         };
         
@@ -141,43 +152,41 @@
             $("#"+originalId+"_graph").removeClass("chart-show").addClass("chart-hide");
         };
         me.showGraph = function() {
+            // close all other open graphs
+            $(".chart-show").addClass("chart-hide").removeClass("chart-show");
+            // show the one we care about
             $("#"+originalId+"_graph").addClass("chart-show").removeClass("chart-hide");
         };
         
         // update graph
-        me.updateDataInGraph = function(number, data) {
+        me.updateDataInGraph = function(id, number, data) {
             // update hidden input
             options.values[number-1] = Number(data);
-            $("#"+originalId+"_cargo").val(options.values);
+            $("#"+id+"_cargo").val(options.values);
             // update graph
-            theGraph.datasets[0].points[number-1].value = data;
-            theGraph.update();
+            thisGraph.datasets[0].points[number-1].value = data;
+            thisGraph.update();
         };
-
-        // fusebox
-        me.makeMeAChart = function() {
-            me.createElementsTemplate();
-            me.loadDataInGraph();
-        };
-        me.makeMeAChart();
 
         // watch for data input changes
         $("#"+originalId+"_inputValue1, #"+originalId+"_inputValue2, #"+originalId+"_inputValue3, #"+originalId+"_inputValue4")
         .on("change", function() {
             var data = $(this).val();
             var number = $(this).attr("id").slice(-1);
+            console.log('a change was made', originalId, number, data);
+
             if(data > -1) {
-                me.updateDataInGraph(number, data);
+                me.updateDataInGraph(originalId, number, data);
                 me.showGraph();
             }
             else {
-                me.updateDataInGraph(number, data);
+                me.updateDataInGraph(originalId, number, data);
                 me.hideGraph();
             }
         });
 
         // watch for graph type changes 
-        $(".dropdown-menu a[data-graph-type]").on("click", function(e) {
+        $("#"+originalId+" .dropdown-menu a[data-graph-type]").on("click", function(e) {
             e.preventDefault();
             var type = $(this).attr("data-graph-type");
             me.toggleGraphType(type);
@@ -189,6 +198,10 @@
             me.hideGraph();
         });
     };
+
+    // TODO - account for graphs that are outside of the viewport (if absolute positioned)
+    // TODO - remove extra points from single, double, and triple inputs
+    // TODO - determine how to math each type of chart (log normal, geometric, etc)
 
     // graphify plugin defaults
     $.fn.graphify.defaults = {

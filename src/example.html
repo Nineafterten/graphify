@@ -18,20 +18,37 @@
     <body>
         <div class="container">
             <h1>Graphify - jQuery Plugin</h1>
-
-            <div class="well">
-                <label for="example">Example Label</label>
-                <!-- the element that the plugin needs -->
-                <div id="example"></div>
+            <BR>
+            <div class="row">
+                <div class="col-xs-12">
+                    <label for="example1">Example Label #1</label>
+                    <div id="example1"></div>
+                </div>
+            </div>
+            <BR>
+            <div class="row">
+                <div class="col-xs-6">
+                    <label for="example2">Example Label #2</label>
+                    <div id="example2"></div>
+                </div>
+                <div class="col-xs-6">
+                    <label for="example3">Example Label #3</label>
+                    <div id="example3"></div>
+                </div>
             </div>
         </div>
 
 
         <script>
-            $("#example").graphify({
+            $("#example1").graphify({
                 graphHeight: 200,
                 graphWidth: 200
             });
+            $("#example2").graphify({
+                graphHeight: 300,
+                graphWidth: 300
+            });
+            $("#example3").graphify();
         </script>
     </body>
 </html>
