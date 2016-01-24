@@ -173,8 +173,7 @@
         .on("change", function() {
             var data = $(this).val();
             var number = $(this).attr("id").slice(-1);
-            console.log('a change was made', originalId, number, data);
-
+            // don't do negative numbers (but do "0" if selected)
             if(data > -1) {
                 me.updateDataInGraph(originalId, number, data);
                 me.showGraph();
@@ -199,9 +198,13 @@
         });
     };
 
+    // Notes for more features
+
     // TODO - account for graphs that are outside of the viewport (if absolute positioned)
     // TODO - remove extra points from single, double, and triple inputs
     // TODO - determine how to math each type of chart (log normal, geometric, etc)
+    // TODO - add option to show multiple graphs at onces (default - false)
+    // TODO - make graphs scaleable by user (?)
 
     // graphify plugin defaults
     $.fn.graphify.defaults = {
