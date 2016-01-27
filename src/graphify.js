@@ -9,7 +9,7 @@
         var thisGraph;
 
         var renderData = {
-            labels: [0, 10, 20, 30],
+            labels: [0, 1, 2, 3, 4, 5],
             datasets: [{
                 data: options.values,
                 fillColor: options.fillColor,
@@ -23,9 +23,10 @@
 
         // the template for selection
         me.createElementsTemplate = function() {
-            $(this.selector).html(
-                "<input id='"+originalId+"_cargo' class='hidden'>" +
-                "<div class='input-group'>" +
+            $(this.selector)
+            .addClass('hidden')
+            .after(
+                "<div id='"+originalId+"_selector' class='input-group'>" +
                     "<div class='input-group-btn graph-toggle-btn'>" +
                         "<button type='button' class='btn btn-warning dropdown-toggle' data-toggle='dropdown'>" +
                             "<i class='fa fa-bullseye graph-toggle-indicator'></i> " +
@@ -115,34 +116,54 @@
             thisGraph = new Chart(ctx).Line(renderData, options.graphOptions);
         };
 
+        me.updateDataArray = function (spaces) {
+            switch(spaces) {
+                case 2:
+                    options.values = [0,0,0,0];
+                    break;
+                case 3:
+                    options.values = [0,0,0,0,0];
+                    break;
+                case 4:
+                    options.values = [0,0,0,0,0,0];
+                    break;
+                default:
+                    options.values = [0,0,0];
+            }
+        };
+
         // toggle graph selections and button style change
         me.toggleGraphType = function (type) {
-            $("#"+originalId+" .graphInput").removeClass("visible").addClass("hidden");
-            $("#"+originalId+" .graphInput." + type).removeClass("hidden").addClass("visible");
+            $("#"+originalId+"_selector .graphInput").removeClass("visible").addClass("hidden");
+            $("#"+originalId+"_selector .graphInput." + type).removeClass("hidden").addClass("visible");
             switch(type) {
                 case "uniform":
                 case "normal":
                 case "logNormal":
                 case "beta":
-                    $("#"+originalId+" .graph-toggle-indicator")
+                    $("#"+originalId+"_selector .graph-toggle-indicator")
                     .removeClass()
                     .addClass("graph-toggle-indicator fa fa-line-chart");
+                    me.updateDataArray(2);
                     break;
                 case "triangular":
-                    $("#"+originalId+" .graph-toggle-indicator")
+                    $("#"+originalId+"_selector .graph-toggle-indicator")
                     .removeClass()
                     .addClass("graph-toggle-indicator fa fa-area-chart");
+                    me.updateDataArray(3);
                     break;
                 case "truncNormal":
                 case "truncLogNormal":
-                    $("#"+originalId+" .graph-toggle-indicator")
+                    $("#"+originalId+"_selector .graph-toggle-indicator")
                     .removeClass()
                     .addClass("graph-toggle-indicator fa fa-bar-chart");
+                    me.updateDataArray(4);
                     break;
                 default:
-                    $("#"+originalId+" .graph-toggle-indicator")
+                    $("#"+originalId+"_selector .graph-toggle-indicator")
                     .removeClass()
                     .addClass("graph-toggle-indicator fa fa-bullseye");
+                    me.updateDataArray(1);
             }
         };
         
@@ -159,11 +180,14 @@
         
         // update graph
         me.updateDataInGraph = function(id, number, data) {
+            number = Number(number);
+            data = Number(data);
+
             // update hidden input
-            options.values[number-1] = Number(data);
-            $("#"+id+"_cargo").val(options.values);
+            options.values[number] = data;
+            $("#"+id).val(options.values);
             // update graph
-            thisGraph.datasets[0].points[number-1].value = data;
+            thisGraph.datasets[0].points[number].value = data;
             thisGraph.update();
         };
 
@@ -188,7 +212,7 @@
         });
 
         // watch for graph type changes 
-        $("#"+originalId+" .dropdown-menu a[data-graph-type]").on("click", function(e) {
+        $("#"+originalId+"_selector .dropdown-menu a[data-graph-type]").on("click", function(e) {
             e.preventDefault();
             var type = $(this).attr("data-graph-type");
             me.toggleGraphType(type);
@@ -223,7 +247,7 @@
         graphWidth: 400,                    // graph width
         dataType: "deterministic",          // graph type
         graphType: "geometric",             // graph type
-        values: [0, 10, 20, 30]
+        values: [0,0,0,0,0,0]
     };
 
 }( jQuery ));
