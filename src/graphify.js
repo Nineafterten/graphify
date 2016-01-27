@@ -101,7 +101,7 @@
                         "<input type='number' class='form-control' id='"+originalId+"_inputValue4' placeholder='max'>" +
                     "</div>" +
                 "</div>"+
-                "<div id='"+originalId+"_graph' class='"+options.graphClassName+" chart-hide'>" +
+                "<div id='"+originalId+"_graph' class='"+options.graphClassName+" chart-hide' style='height:"+options.graphHeight+"px'>" +
                     "<a class='hide-chart-button'><i class='fa fa-times-circle'></i></a>" +
                     "<canvas id='"+originalId+"_canvas' width='"+options.graphWidth+"' height='"+options.graphHeight+"'></canvas>" +
                 "</div>"
@@ -114,7 +114,6 @@
             var ctx = $("#"+originalId+"_canvas").get(0).getContext("2d");
             thisGraph = new Chart(ctx).Line(renderData, options.graphOptions);
         };
-        me.loadDataInGraph();
 
         // toggle graph selections and button style change
         me.toggleGraphType = function (type) {
@@ -173,6 +172,10 @@
         .on("change", function() {
             var data = $(this).val();
             var number = $(this).attr("id").slice(-1);
+
+            me.showGraph();
+            me.loadDataInGraph();
+
             // don't do negative numbers (but do "0" if selected)
             if(data > -1) {
                 me.updateDataInGraph(originalId, number, data);
@@ -200,11 +203,9 @@
 
     // Notes for more features
 
-    // TODO - account for graphs that are outside of the viewport (if absolute positioned)
     // TODO - remove extra points from single, double, and triple inputs
     // TODO - determine how to math each type of chart (log normal, geometric, etc)
     // TODO - add option to show multiple graphs at onces (default - false)
-    // TODO - make graphs scaleable by user (?)
 
     // graphify plugin defaults
     $.fn.graphify.defaults = {
