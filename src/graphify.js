@@ -121,7 +121,10 @@
         me.loadDataInGraph = function() {
 
             function chartPlots(min, max) {
+
+                renderData.labels = [];
                 renderData.datasets[0].data = [];
+
                 for (var i= min; i <= max; i++) {
                     // Add data point
                     renderData.datasets[0].data.push(Math.log(i));
