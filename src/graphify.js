@@ -8,10 +8,6 @@
         var originalId = this.selector.substring(1);
         var thisGraph;
 
-        // temp inputs
-        var min = 1;
-        var max = 10;
-
         var renderData = {
             labels: options.labels,
             datasets: [{
@@ -117,25 +113,64 @@
         };
         me.createElementsTemplate();
 
-        me.chartPlots = function (min, max) {
+        me.parseDataTypes = function (data, inputNumber) {
+            switch(options.graphType) {
+                case "uniform":
+                case "normal":
+                case "logNormal":
+                case "beta":
+                    me.handleDoubleDataInput(data, inputNumber);
+                    break;
+                case "triangular":
+                    me.handleTripleDataInput(data, inputNumber);
+                    break;
+                case "truncNormal":
+                case "truncLogNormal":
+                    me.handleQuadrupleDataInput(data, inputNumber);
+                    break;
+                default:
+                    me.handleSingleDataInput(data, inputNumber);
+            }
+        };
 
+        me.handleSingleDataInput = function (value, position) {
+            // temp inputs
+            var min = value || 1;
+            var max = 10;
+            // reset data and labels
             renderData.labels = [];
             renderData.datasets[0].data = [];
 
             for (var i= min; i <= max; i++) {
-                // Add data point
+                // Add data points and labels
                 renderData.datasets[0].data.push(Math.log(i));
-                // Add label
                 renderData.labels.push(i);
             }
+            me.storeCargoData(renderData.datasets[0].data);
             return renderData.datasets;
+        };
+        me.handleDoubleDataInput = function (value, position) {
+            console.log("handleDoubleDataInput", value, position);
+        };
+        me.handleTripleDataInput = function (value, position) {
+            console.log("handleTripleDataInput", value, position);
+        };
+        me.handleQuadrupleDataInput = function (value, position) {
+            console.log("handleQuadrupleDataInput", value, position);
         };
 
         // load the data and render it
-        me.loadDataInGraph = function(data) {
-            me.chartPlots(data, data+10);
+        me.loadDataInGraph = function() {
             var ctx = $("#"+originalId+"_canvas").get(0).getContext("2d");
             thisGraph = new Chart(ctx).Line(renderData, options.graphOptions);
+        };
+
+        // update hidden input (data for server)
+        me.storeCargoData = function (newData) {
+            // update instance data
+            options.values = newData;
+            // update hidden input
+            $("#"+originalId).val(options.values);
         };
 
         // toggle graph selections and button style change
@@ -147,22 +182,26 @@
                 case "normal":
                 case "logNormal":
                 case "beta":
+                    options.graphType = type;
                     $("#"+originalId+"_selector .graph-toggle-indicator")
                     .removeClass()
                     .addClass("graph-toggle-indicator fa fa-line-chart");
                     break;
                 case "triangular":
+                    options.graphType = type;
                     $("#"+originalId+"_selector .graph-toggle-indicator")
                     .removeClass()
                     .addClass("graph-toggle-indicator fa fa-area-chart");
                     break;
                 case "truncNormal":
                 case "truncLogNormal":
+                    options.graphType = type;
                     $("#"+originalId+"_selector .graph-toggle-indicator")
                     .removeClass()
                     .addClass("graph-toggle-indicator fa fa-bar-chart");
                     break;
                 default:
+                    options.graphType = type;
                     $("#"+originalId+"_selector .graph-toggle-indicator")
                     .removeClass()
                     .addClass("graph-toggle-indicator fa fa-bullseye");
@@ -174,8 +213,10 @@
             $("#"+originalId+"_graph").removeClass("chart-show").addClass("chart-hide");
         };
         me.showGraph = function() {
-            // close all other open graphs
-            $(".chart-show").addClass("chart-hide").removeClass("chart-show");
+            if(options.showMultipleGraphs === false) {
+                // close all other open graphs
+                $(".chart-show").addClass("chart-hide").removeClass("chart-show");
+            }
             // show the one we care about
             $("#"+originalId+"_graph").addClass("chart-show").removeClass("chart-hide");
         };
@@ -184,8 +225,11 @@
         $("#"+originalId+"_inputValue1, #"+originalId+"_inputValue2, #"+originalId+"_inputValue3, #"+originalId+"_inputValue4")
         .on("keyup", function() {
             var data = Number($(this).val());
+            var inputNumber = Number($(this).attr("id").slice(-1));
+
             me.showGraph();
-            me.loadDataInGraph(data);
+            me.parseDataTypes(data, inputNumber);
+            me.loadDataInGraph();
             // don't do negative numbers (but do "0" if selected)
             if(data < 0) {
                 me.hideGraph();
