@@ -1,6 +1,6 @@
 
 (function ( $ ) {
-    
+  
     $.fn.graphify = function(userOptions) {
         
         var me = this;
@@ -8,16 +8,23 @@
         var originalId = this.selector.substring(1);
         var thisGraph;
 
+        // inputs
+        var min = 1;
+        var max = 10;
+
         var renderData = {
-            labels: [0, 1, 2, 3, 4, 5],
+            labels: options.labels,
             datasets: [{
+                bezierCurve: options.bezierCurve,
                 data: options.values,
+                datasetFill: options.datasetFill,
                 fillColor: options.fillColor,
                 strokeColor: options.strokeColor,
                 pointColor: options.pointColor,
-                pointStrokeColor: options.pointStrokeColor,
+                pointDot: options.pointDot,
                 pointHighlightFill: options.pointHighlightFill,
-                pointHighlightStroke: options.pointHighlightStroke
+                pointHighlightStroke: options.pointHighlightStroke,
+                pointStrokeColor: options.pointStrokeColor
             }]
         };
 
@@ -112,24 +119,21 @@
 
         // load the data and render it
         me.loadDataInGraph = function() {
+
+            function chartPlots(min, max) {
+                renderData.datasets[0].data = [];
+                for (var i= min; i <= max; i++) {
+                    // Add data point
+                    renderData.datasets[0].data.push(Math.log(i));
+                    // Add label
+                    renderData.labels.push(i);
+                }
+                return renderData.datasets;
+            }
+            chartPlots(min, max);
+
             var ctx = $("#"+originalId+"_canvas").get(0).getContext("2d");
             thisGraph = new Chart(ctx).Line(renderData, options.graphOptions);
-        };
-
-        me.updateDataArray = function (spaces) {
-            switch(spaces) {
-                case 2:
-                    options.values = [0,0,0,0];
-                    break;
-                case 3:
-                    options.values = [0,0,0,0,0];
-                    break;
-                case 4:
-                    options.values = [0,0,0,0,0,0];
-                    break;
-                default:
-                    options.values = [0,0,0];
-            }
         };
 
         // toggle graph selections and button style change
@@ -144,26 +148,22 @@
                     $("#"+originalId+"_selector .graph-toggle-indicator")
                     .removeClass()
                     .addClass("graph-toggle-indicator fa fa-line-chart");
-                    me.updateDataArray(2);
                     break;
                 case "triangular":
                     $("#"+originalId+"_selector .graph-toggle-indicator")
                     .removeClass()
                     .addClass("graph-toggle-indicator fa fa-area-chart");
-                    me.updateDataArray(3);
                     break;
                 case "truncNormal":
                 case "truncLogNormal":
                     $("#"+originalId+"_selector .graph-toggle-indicator")
                     .removeClass()
                     .addClass("graph-toggle-indicator fa fa-bar-chart");
-                    me.updateDataArray(4);
                     break;
                 default:
                     $("#"+originalId+"_selector .graph-toggle-indicator")
                     .removeClass()
                     .addClass("graph-toggle-indicator fa fa-bullseye");
-                    me.updateDataArray(1);
             }
         };
         
@@ -184,16 +184,16 @@
             data = Number(data);
 
             // update hidden input
-            options.values[number] = data;
+            options.values[number-1] = data;
             $("#"+id).val(options.values);
             // update graph
-            thisGraph.datasets[0].points[number].value = data;
+            thisGraph.datasets[0].points[number-1].value = data;
             thisGraph.update();
         };
 
         // watch for data input changes
         $("#"+originalId+"_inputValue1, #"+originalId+"_inputValue2, #"+originalId+"_inputValue3, #"+originalId+"_inputValue4")
-        .on("change", function() {
+        .on("keyup", function() {
             var data = $(this).val();
             var number = $(this).attr("id").slice(-1);
 
@@ -225,15 +225,12 @@
         });
     };
 
-    // Notes for more features
-
-    // TODO - remove extra points from single, double, and triple inputs
-    // TODO - determine how to math each type of chart (log normal, geometric, etc)
-    // TODO - add option to show multiple graphs at onces (default - false)
-
     // graphify plugin defaults
     $.fn.graphify.defaults = {
-        // graph JS defaults
+        // Chart JS defaults
+        bezierCurve: true,
+        pointDot: false,
+        datasetFill: false,
         fillColor: "rgba(151,187,205,0.2)",
         strokeColor: "rgba(151,187,205,1)",
         pointColor: "rgba(151,187,205,1)",
@@ -241,13 +238,15 @@
         pointHighlightFill: "#fff",
         pointHighlightStroke: "rgba(151,187,205,1)",
         // graphify defaults
+        showMultipleGraphs: false,          // show multiple graphs on the page at the same time
         graphClassName: "data-graph",       // custom class name (for styling)
-        graphHeight: 400,                   // graph height
+        graphHeight: 250,                   // graph height
         graphOptions: null,                 // custom options for Chart JS 'options'
-        graphWidth: 400,                    // graph width
+        graphWidth: 250,                    // graph width
         dataType: "deterministic",          // graph type
         graphType: "geometric",             // graph type
-        values: [0,0,0,0,0,0]
+        values: [],
+        labels: []
     };
 
 }( jQuery ));
