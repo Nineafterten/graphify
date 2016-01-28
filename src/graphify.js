@@ -8,7 +8,7 @@
         var originalId = this.selector.substring(1);
         var thisGraph;
 
-        // inputs
+        // temp inputs
         var min = 1;
         var max = 10;
 
@@ -117,24 +117,23 @@
         };
         me.createElementsTemplate();
 
-        // load the data and render it
-        me.loadDataInGraph = function() {
+        me.chartPlots = function (min, max) {
 
-            function chartPlots(min, max) {
+            renderData.labels = [];
+            renderData.datasets[0].data = [];
 
-                renderData.labels = [];
-                renderData.datasets[0].data = [];
-
-                for (var i= min; i <= max; i++) {
-                    // Add data point
-                    renderData.datasets[0].data.push(Math.log(i));
-                    // Add label
-                    renderData.labels.push(i);
-                }
-                return renderData.datasets;
+            for (var i= min; i <= max; i++) {
+                // Add data point
+                renderData.datasets[0].data.push(Math.log(i));
+                // Add label
+                renderData.labels.push(i);
             }
-            chartPlots(min, max);
+            return renderData.datasets;
+        };
 
+        // load the data and render it
+        me.loadDataInGraph = function(data) {
+            me.chartPlots(data, data+10);
             var ctx = $("#"+originalId+"_canvas").get(0).getContext("2d");
             thisGraph = new Chart(ctx).Line(renderData, options.graphOptions);
         };
@@ -180,36 +179,15 @@
             // show the one we care about
             $("#"+originalId+"_graph").addClass("chart-show").removeClass("chart-hide");
         };
-        
-        // update graph
-        me.updateDataInGraph = function(id, number, data) {
-            number = Number(number);
-            data = Number(data);
-
-            // update hidden input
-            options.values[number-1] = data;
-            $("#"+id).val(options.values);
-            // update graph
-            thisGraph.datasets[0].points[number-1].value = data;
-            thisGraph.update();
-        };
 
         // watch for data input changes
         $("#"+originalId+"_inputValue1, #"+originalId+"_inputValue2, #"+originalId+"_inputValue3, #"+originalId+"_inputValue4")
         .on("keyup", function() {
-            var data = $(this).val();
-            var number = $(this).attr("id").slice(-1);
-
+            var data = Number($(this).val());
             me.showGraph();
-            me.loadDataInGraph();
-
+            me.loadDataInGraph(data);
             // don't do negative numbers (but do "0" if selected)
-            if(data > -1) {
-                me.updateDataInGraph(originalId, number, data);
-                me.showGraph();
-            }
-            else {
-                me.updateDataInGraph(originalId, number, data);
+            if(data < 0) {
                 me.hideGraph();
             }
         });
@@ -241,12 +219,12 @@
         pointHighlightFill: "#fff",
         pointHighlightStroke: "rgba(151,187,205,1)",
         // graphify defaults
+        dataType: "deterministic",          // data type
         showMultipleGraphs: false,          // show multiple graphs on the page at the same time
         graphClassName: "data-graph",       // custom class name (for styling)
         graphHeight: 250,                   // graph height
         graphOptions: null,                 // custom options for Chart JS 'options'
         graphWidth: 250,                    // graph width
-        dataType: "deterministic",          // graph type
         graphType: "geometric",             // graph type
         values: [],
         labels: []
