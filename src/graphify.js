@@ -113,27 +113,38 @@
         };
         me.createElementsTemplate();
 
-        me.parseDataTypes = function (data, inputNumber) {
+        me.chooseGraphType = function (data, inputNumber) {
             switch(options.graphType) {
                 case "uniform":
+                    me.graph_uniform(data, inputNumber);
+                    break;
                 case "normal":
+                    me.graph_normal(data, inputNumber);
+                    break;
                 case "logNormal":
+                    me.graph_logNormal(data, inputNumber);
+                    break;
                 case "beta":
-                    me.handleDoubleDataInput(data, inputNumber);
+                    me.graph_beta(data, inputNumber);
+                    break;
+                case "geometric":
+                    me.graph_geometric(data, inputNumber);
                     break;
                 case "triangular":
-                    me.handleTripleDataInput(data, inputNumber);
+                    graph_triangular(data, inputNumber);
                     break;
                 case "truncNormal":
+                    me.graph_truncNormal(data, inputNumber);
+                    break;
                 case "truncLogNormal":
-                    me.handleQuadrupleDataInput(data, inputNumber);
+                    me.graph_trucLogNormal(data, inputNumber);
                     break;
                 default:
-                    me.handleSingleDataInput(data, inputNumber);
+                    me.graph_deterministic(data, inputNumber);
             }
         };
 
-        me.handleSingleDataInput = function (value, position) {
+        me.graph_logNormal = function (value, position) {
             // temp inputs
             var min = value || 1;
             var max = 10;
@@ -149,16 +160,30 @@
             me.storeCargoData(renderData.datasets[0].data);
             return renderData.datasets;
         };
-        me.handleDoubleDataInput = function (value, position) {
-            console.log("handleDoubleDataInput", value, position);
+        me.graph_uniform = function (value, position) {
+            console.log("graph_uniform", value, position);
         };
-        me.handleTripleDataInput = function (value, position) {
-            console.log("handleTripleDataInput", value, position);
+        me.graph_normal = function (value, position) {
+            console.log("graph_normal", value, position);
         };
-        me.handleQuadrupleDataInput = function (value, position) {
-            console.log("handleQuadrupleDataInput", value, position);
+        me.graph_beta = function (value, position) {
+            console.log("graph_beta", value, position);
         };
-
+        me.graph_triangular = function (value, position) {
+            console.log("graph_triangular", value, position);
+        };
+        me.graph_geometric = function (value, position) {
+            console.log("graph_geometric", value, position);
+        };
+        me.graph_truncNormal = function (value, position) {
+            console.log("graph_truncNormal", value, position);
+        };
+        me.graph_trucLogNormal = function (value, position) {
+            console.log("graph_trucLogNormal", value, position);
+        };
+        me.graph_deterministic = function (value, position) {
+            console.log("graph_deterministic", value, position);
+        };
         // load the data and render it
         me.loadDataInGraph = function() {
             var ctx = $("#"+originalId+"_canvas").get(0).getContext("2d");
@@ -228,7 +253,7 @@
             var inputNumber = Number($(this).attr("id").slice(-1));
 
             me.showGraph();
-            me.parseDataTypes(data, inputNumber);
+            me.chooseGraphType(data, inputNumber);
             me.loadDataInGraph();
             // don't do negative numbers (but do "0" if selected)
             if(data < 0) {
