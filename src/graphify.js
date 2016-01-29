@@ -155,6 +155,20 @@
             }
         };
 
+        // if the user tries to enter an input after a blank one, prefill the data points before it with a zero
+        me.handleLaterInputs = function(value, position) {
+            if(options.values.length < position) {
+                for(var c=0; c < position; c++) {
+                    options.values.push(0);
+                }
+                options.values[position-1] = value;
+                me.prefillDataInputs();
+            }
+            else {
+                options.values[position-1] = value;
+            }
+        };
+
         me.graph_logNormal = function (value, position) {
             // temp inputs
             var min = value || 1;
@@ -172,27 +186,35 @@
             return renderData.datasets;
         };
         me.graph_uniform = function (value, position) {
+            me.handleLaterInputs(value, position);
             console.log("graph_uniform", value, position);
         };
         me.graph_normal = function (value, position) {
+            me.handleLaterInputs(value, position);
             console.log("graph_normal", value, position);
         };
         me.graph_beta = function (value, position) {
+            me.handleLaterInputs(value, position);
             console.log("graph_beta", value, position);
         };
         me.graph_triangular = function (value, position) {
+            me.handleLaterInputs(value, position);
             console.log("graph_triangular", value, position);
         };
         me.graph_geometric = function (value, position) {
+            me.handleLaterInputs(value, position);
             console.log("graph_geometric", value, position);
         };
         me.graph_truncNormal = function (value, position) {
+            me.handleLaterInputs(value, position);
             console.log("graph_truncNormal", value, position);
         };
         me.graph_trucLogNormal = function (value, position) {
+            me.handleLaterInputs(value, position);
             console.log("graph_trucLogNormal", value, position);
         };
         me.graph_deterministic = function (value, position) {
+            me.handleLaterInputs(value, position);
             console.log("graph_deterministic", value, position);
         };
         // load the data and render it
