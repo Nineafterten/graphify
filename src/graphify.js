@@ -24,6 +24,18 @@
             }]
         };
 
+        me.init = function () {
+            me.createElementsTemplate();
+            me.toggleGraphType(options.graphType);
+            // if data is passes in on start
+            if(options.values.length) {
+                me.showGraph();
+                me.prefillDataInputs();
+                me.loadDataInGraph();
+                me.storeCargoData(options.values);
+            }
+        };
+
         // the template for selection
         me.createElementsTemplate = function() {
             $(this.selector)
@@ -111,9 +123,8 @@
                 "</div>"
             );
         };
-        me.createElementsTemplate();
 
-        me.chooseGraphType = function (data, inputNumber) {
+        me.updateDataValueInGraphType = function (data, inputNumber) {
             switch(options.graphType) {
                 case "uniform":
                     me.graph_uniform(data, inputNumber);
@@ -131,7 +142,7 @@
                     me.graph_geometric(data, inputNumber);
                     break;
                 case "triangular":
-                    graph_triangular(data, inputNumber);
+                    me.graph_triangular(data, inputNumber);
                     break;
                 case "truncNormal":
                     me.graph_truncNormal(data, inputNumber);
@@ -190,6 +201,14 @@
             thisGraph = new Chart(ctx).Line(renderData, options.graphOptions);
         };
 
+        me.prefillDataInputs = function () {
+            for(var d=0; options.values.length > d; d++) {
+                var el = "#"+originalId+"_inputValue"+(d+1);
+                var data = options.values[d];
+                $('input'+el).val(data);
+            }
+        };
+
         // update hidden input (data for server)
         me.storeCargoData = function (newData) {
             // update instance data
@@ -246,6 +265,8 @@
             $("#"+originalId+"_graph").addClass("chart-show").removeClass("chart-hide");
         };
 
+        me.init();
+
         // watch for data input changes
         $("#"+originalId+"_inputValue1, #"+originalId+"_inputValue2, #"+originalId+"_inputValue3, #"+originalId+"_inputValue4")
         .on("keyup", function() {
@@ -253,7 +274,7 @@
             var inputNumber = Number($(this).attr("id").slice(-1));
 
             me.showGraph();
-            me.chooseGraphType(data, inputNumber);
+            me.updateDataValueInGraphType(data, inputNumber);
             me.loadDataInGraph();
             // don't do negative numbers (but do "0" if selected)
             if(data < 0) {
@@ -273,6 +294,7 @@
             e.preventDefault();
             me.hideGraph();
         });
+
     };
 
     // graphify plugin defaults
@@ -294,7 +316,7 @@
         graphHeight: 250,                   // graph height
         graphOptions: null,                 // custom options for Chart JS 'options'
         graphWidth: 250,                    // graph width
-        graphType: "geometric",             // graph type
+        graphType: "deterministic",         // graph type
         values: [],
         labels: []
     };

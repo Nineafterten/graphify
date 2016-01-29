@@ -40,15 +40,18 @@
 
 
         <script>
-            $("#example1").graphify({
-                graphHeight: 200,
-                graphWidth: 200
-            });
+            $("#example1").graphify();
             $("#example2").graphify({
                 graphHeight: 300,
-                graphWidth: 300
+                graphWidth: 300,
+                graphType: "triangular"
             });
-            $("#example3").graphify();
+            $("#example3").graphify({
+                graphHeight: 200,
+                graphWidth: 200,
+                graphType: "logNormal",
+                values: [2, 8]
+            });
         </script>
     </body>
 </html>
